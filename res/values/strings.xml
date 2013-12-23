@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">BatteryTester</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="serverToggle">Server</string>
+    <string name="selectPartner">Select Partner</string>
+    <string name="startTest">Start Test</string>
+    <string name="stopTest">Stop Test</string>
+    <string name="turnOnBT">Hit yes next time</string>
+
+</resources>

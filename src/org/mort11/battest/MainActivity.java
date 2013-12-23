@@ -18,7 +18,6 @@ import android.util.Log;
 
 public class MainActivity extends Activity {
     
-	private BluetoothDevice partner = null;
 	private boolean running = false;
 	private int syncs = 0;
 
@@ -28,19 +27,15 @@ public class MainActivity extends Activity {
 	private final int START_TEST = 2;
 	private final int STOP_TEST = 3;
 
+    private final IntentFilter BTfilter = new IntentFilter(BluetoothDevicePicker.ACTION_DEVICE_SELECTED);
+	private final BluetoothDeviceSelectedReceiver deviceSelectedRX = new BluetoothDeviceSelectedReceiver();
+    
 	private final Intent launchDevicePicker = new Intent(BluetoothDevicePicker.ACTION_LAUNCH)
         .putExtra(BluetoothDevicePicker.EXTRA_NEED_AUTH, false)
-        .putExtra(BluetoothDevicePicker.EXTRA_FILTER_TYPE, BluetoothDevicePicker.FILTER_ALL);
-       // .putExtra(BluetoothDevicePicker.EXTRA_LAUNCH_PACKAGE, "org.mort11.battest")
-       // .putExtra(BluetoothDevicePicker.EXTRA_LAUNCH_CLASS, "org.mort11.battest.MainActivity");
-	private final IntentFilter BTfilter = new IntentFilter(BluetoothDevicePicker.ACTION_DEVICE_SELECTED);
-	private final BroadcastReceiver deviceSelectedRX = new BroadcastReceiver() {
-		public void onReceive(Context c, Intent i) {
-            Log.d(getString(R.string.LogcatTag),"got device");
-			partner = (BluetoothDevice) i.getExtras().get(
-					BluetoothDevice.EXTRA_DEVICE);
-		}
-	};
+        .putExtra(BluetoothDevicePicker.EXTRA_FILTER_TYPE, BluetoothDevicePicker.FILTER_ALL)
+        .putExtra(BluetoothDevicePicker.EXTRA_LAUNCH_PACKAGE, "org.mort11.battest")
+        .putExtra(BluetoothDevicePicker.EXTRA_LAUNCH_CLASS, BluetoothDeviceSelectedReceiver.class.getName());
+	
 
 	private final BroadcastReceiver syncUpdate = new BroadcastReceiver() {
 		public void onReceive(Context c, Intent i ){
@@ -88,7 +83,7 @@ public class MainActivity extends Activity {
 		if (((Switch) findViewById(R.id.server)).isChecked()) {
 			// pass
 		} else {
-			if (partner == null) {
+			if (deviceSelectedRX.getPartner() == null) {
 				Toast.makeText(this, "need partner", Toast.LENGTH_SHORT).show();
 				return;
 			}
@@ -124,7 +119,7 @@ public class MainActivity extends Activity {
 						WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 				Intent syncClientIntent = new Intent(this,
 						SyncClientService.class).putExtra("MAC",
-						partner.getAddress());
+						deviceSelectedRX.getPartner().getAddress());
 				startService(syncClientIntent);
 				syncs = 0;
 				running = true;

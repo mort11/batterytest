@@ -9,5 +9,5 @@
     <string name="startTest">Start Test</string>
     <string name="stopTest">Stop Test</string>
     <string name="turnOnBT">Hit yes next time</string>
-
+	<string name="LogcatTag">Battest</string>
 </resources>

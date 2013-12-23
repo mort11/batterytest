@@ -15,6 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
+		android:onClick="selectPartner"
         android:text="@string/selectPartner" />
 
     <Switch
@@ -33,6 +34,7 @@
         android:layout_below="@+id/selPartner"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
+		android:onClick="toggleTesting"
         android:text="@string/startTest" />
 
     <TextView

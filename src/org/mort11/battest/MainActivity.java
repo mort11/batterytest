@@ -14,9 +14,10 @@ import android.view.WindowManager;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 
 public class MainActivity extends Activity {
-
+    
 	private BluetoothDevice partner = null;
 	private boolean running = false;
 	private int syncs = 0;
@@ -27,12 +28,15 @@ public class MainActivity extends Activity {
 	private final int START_TEST = 2;
 	private final int STOP_TEST = 3;
 
-	private final Intent launchDevicePicker = new Intent(
-			"android.bluetooth.devicepicker.extra.LAUNCH");
-	private final IntentFilter BTfilter = new IntentFilter(
-			"android.bluetooth.devicepicker.action.DEVICE_SELECTED");
+	private final Intent launchDevicePicker = new Intent(BluetoothDevicePicker.ACTION_LAUNCH)
+        .putExtra(BluetoothDevicePicker.EXTRA_NEED_AUTH, false)
+        .putExtra(BluetoothDevicePicker.EXTRA_FILTER_TYPE, BluetoothDevicePicker.FILTER_ALL);
+       // .putExtra(BluetoothDevicePicker.EXTRA_LAUNCH_PACKAGE, "org.mort11.battest")
+       // .putExtra(BluetoothDevicePicker.EXTRA_LAUNCH_CLASS, "org.mort11.battest.MainActivity");
+	private final IntentFilter BTfilter = new IntentFilter(BluetoothDevicePicker.ACTION_DEVICE_SELECTED);
 	private final BroadcastReceiver deviceSelectedRX = new BroadcastReceiver() {
 		public void onReceive(Context c, Intent i) {
+            Log.d(getString(R.string.LogcatTag),"got device");
 			partner = (BluetoothDevice) i.getExtras().get(
 					BluetoothDevice.EXTRA_DEVICE);
 		}
@@ -47,7 +51,7 @@ public class MainActivity extends Activity {
 					toggleTesting(findViewById(R.id.startTest));
 				}
 			}
-		}
+		} 
 	};
 	
 	@Override
@@ -59,11 +63,13 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 		registerReceiver(deviceSelectedRX, BTfilter);
+		super.onResume();
 	}
 
 	@Override
 	protected void onPause() {
 		unregisterReceiver(deviceSelectedRX);
+		super.onPause();
 	}
 
 	@Override
@@ -133,11 +139,14 @@ public class MainActivity extends Activity {
 		BluetoothAdapter mbtAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (!mbtAdapter.isEnabled()) {
 			startActivityForResult(enableBTIntent, reqCode);
-		}
+		}else{
+            scanForPartners();
+        }
 	}
 
 	private void scanForPartners() {
 		startActivity(launchDevicePicker);
+        Log.d(getString(R.string.LogcatTag), "asked for partner");
 	}
 
 }

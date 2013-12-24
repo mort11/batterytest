@@ -2,19 +2,18 @@ package org.mort11.battest;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log;
 
 public class MainActivity extends Activity {
     
@@ -32,9 +31,7 @@ public class MainActivity extends Activity {
     
 	private final Intent launchDevicePicker = new Intent(BluetoothDevicePicker.ACTION_LAUNCH)
         .putExtra(BluetoothDevicePicker.EXTRA_NEED_AUTH, false)
-        .putExtra(BluetoothDevicePicker.EXTRA_FILTER_TYPE, BluetoothDevicePicker.FILTER_ALL)
-        .putExtra(BluetoothDevicePicker.EXTRA_LAUNCH_PACKAGE, "org.mort11.battest")
-        .putExtra(BluetoothDevicePicker.EXTRA_LAUNCH_CLASS, BluetoothDeviceSelectedReceiver.class.getName());
+        .putExtra(BluetoothDevicePicker.EXTRA_FILTER_TYPE, BluetoothDevicePicker.FILTER_ALL);
 	
 
 	private final BroadcastReceiver syncUpdate = new BroadcastReceiver() {
@@ -53,17 +50,18 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+//		registerReceiver(deviceSelectedRX, BTfilter);
 	}
 
 	@Override
 	protected void onResume() {
-		registerReceiver(deviceSelectedRX, BTfilter);
+		
 		super.onResume();
 	}
 
 	@Override
 	protected void onPause() {
-		unregisterReceiver(deviceSelectedRX);
+//		unregisterReceiver(deviceSelectedRX);
 		super.onPause();
 	}
 
@@ -140,6 +138,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void scanForPartners() {
+		registerReceiver(deviceSelectedRX, BTfilter);
 		startActivity(launchDevicePicker);
         Log.d(getString(R.string.LogcatTag), "asked for partner");
 	}

@@ -90,10 +90,11 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	protected void onStop() {
-		getPreferences(MODE_PRIVATE).edit().putLong("Last Run",
-				lastRunTime.toMillis(true)).apply();
-		super.onStop();
+	protected void onPause() {
+		if(running){
+			stopTest(((Switch)findViewById(R.id.server)).isChecked());
+		}
+		super.onPause();
 	}
 
 	@Override
@@ -191,6 +192,8 @@ public class MainActivity extends Activity {
 		Time now = new Time("UTC");
 		now.setToNow();
 		lastRunTime.set(now.toMillis(true) - startTime.toMillis(true));
+		getPreferences(MODE_PRIVATE).edit().putLong("Last Run",
+				lastRunTime.toMillis(true)).apply();
 		timerHandler.removeCallbacks(timer);
 		((TextView) findViewById(R.id.startTest)).setText(R.string.startTest);
 	}
